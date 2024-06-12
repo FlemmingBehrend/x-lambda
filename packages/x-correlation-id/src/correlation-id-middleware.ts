@@ -150,14 +150,12 @@ const correlationIdMiddleware = (
 
   const before = async (request: Request) => {
     if (isAPIGatewayEvent(request.event)) {
-      console.log("API Gateway Event");
       setCorrelationTrigger(CorrelationTrigger.API_GATEWAY);
       if (request.event.headers && request.event.headers[correlationIdName]) {
         setCorrelationId(request.event.headers[correlationIdName]);
         setCorrelationStatus(CorrelationStatus.PASSED);
         return;
       } else {
-        console.log("Creating correlation id");
         setCorrelationId(request.event.requestContext.requestId);
         setCorrelationStatus(CorrelationStatus.CREATED);
         return;
