@@ -1,6 +1,6 @@
 {
   "name": "@flemmingbehrend/x-correlation-id",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Middy middleware to add or forward a correlation id",
   "private": false,
   "main": "./dist/index.js",
