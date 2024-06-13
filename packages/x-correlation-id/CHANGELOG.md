@@ -1,5 +1,11 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.3.0
+
+### Minor Changes
+
+- bf04bf9: added dist folder to published package
+
 ## 0.2.0
 
 ### Minor Changes
