@@ -1,4 +1,3 @@
-import "./extended-global";
 import { Logger } from "@aws-lambda-powertools/logger";
 import { MiddlewareObj, Request } from "@middy/core";
 import { APIGatewayEvent, SQSRecord } from "aws-lambda";
@@ -9,7 +8,6 @@ import {
   isLambdaRequest,
   isCorrelationIdRequest,
 } from "./typeguards";
-import { ExtendedGlobal } from "./extended-global";
 
 /**
  * Specifies the name of the correlation id attribute.
@@ -65,87 +63,63 @@ type PowerToolsLoggerOptions = {
 const correlationIdMiddleware = (
   powertoolsLoggerOptions?: PowerToolsLoggerOptions,
 ): MiddlewareObj => {
-  if (powertoolsLoggerOptions) {
-    if (!powertoolsLoggerOptions.options) {
-      // Add default options
-      powertoolsLoggerOptions.options = {
-        logCorrelationId: true,
-        logCorrelationStatus: false,
-        logCorrelationTrigger: false,
-      };
-    }
-  }
+  // Add default options
+  const defaultOptions = {
+    logCorrelationId: true,
+    logCorrelationStatus: true,
+    logCorrelationTrigger: true,
+  };
+  const options = Object.assign(
+    defaultOptions,
+    powertoolsLoggerOptions?.options,
+  );
 
   function setCorrelationId(correlationId: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationId &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationId && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_id: correlationId,
       });
     }
-    (global as ExtendedGlobal)[correlationIdName] = correlationId;
   }
 
   function unsetCorrelationId() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationId &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationId && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationIdName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationIdName];
   }
 
   function setCorrelationTrigger(trigger: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationTrigger &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationTrigger && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_trigger: trigger,
       });
     }
-    (global as ExtendedGlobal)[correlationTriggerName] = trigger;
   }
 
   function unsetCorrelationTrigger() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationTrigger &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationTrigger && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationTriggerName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationTriggerName];
   }
 
   function setCorrelationStatus(status: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationStatus &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationStatus && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_status: status,
       });
     }
-    (global as ExtendedGlobal)[correlationStatusName] = status;
   }
 
   function unsetCorrelationStatus() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationStatus &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationStatus && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationStatusName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationStatusName];
   }
 
   const before = async (request: Request) => {
