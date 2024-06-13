@@ -1,5 +1,11 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.6.0
+
+### Minor Changes
+
+- 0270dcf: export globals
+
 ## 0.5.0
 
 ### Minor Changes
