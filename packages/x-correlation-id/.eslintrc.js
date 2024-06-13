@@ -2,7 +2,7 @@ module.exports = {
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   root: true,
   extends: [
-    '@repo/eslint-config/library.js',
+    '@flemmingbehrend/x-lambda-eslint-config/library.js',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
   ],

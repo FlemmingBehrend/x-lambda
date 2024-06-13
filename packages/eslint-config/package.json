@@ -1,7 +1,7 @@
 {
-  "name": "@repo/eslint-config",
+  "name": "@flemmingbehrend/x-lambda-eslint-config",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "files": [
     "library.js",
     "next.js",
