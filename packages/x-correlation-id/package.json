@@ -29,8 +29,8 @@
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.1.1",
     "@middy/core": "^4.7.0",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@flemmingbehrend/x-lambda-eslint-config": "workspace:*",
+    "@flemmingbehrend/x-lambda-typescript-config": "workspace:*",
     "aws-lambda": "^1.0.7"
   },
   "files": [

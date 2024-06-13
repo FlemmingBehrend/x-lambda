@@ -19,46 +19,20 @@ importers:
         specifier: latest
         version: 2.0.3
 
-  packages/eslint-config:
-    devDependencies:
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.1.0
-        version: 7.13.0(@typescript-eslint/parser@7.13.0)(eslint@8.57.0)(typescript@5.4.5)
-      '@typescript-eslint/parser':
-        specifier: ^7.1.0
-        version: 7.13.0(eslint@8.57.0)(typescript@5.4.5)
-      '@vercel/style-guide':
-        specifier: ^5.2.0
-        version: 5.2.0(eslint@8.57.0)(prettier@3.3.2)(typescript@5.4.5)
-      eslint-config-prettier:
-        specifier: ^9.1.0
-        version: 9.1.0(eslint@8.57.0)
-      eslint-config-turbo:
-        specifier: ^2.0.0
-        version: 2.0.3(eslint@8.57.0)
-      eslint-plugin-only-warn:
-        specifier: ^1.1.0
-        version: 1.1.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.4.5
-
-  packages/typescript-config: {}
-
   packages/x-correlation-id:
     dependencies:
       '@aws-lambda-powertools/logger':
         specifier: ^2.1.1
-        version: 2.1.1(@middy/core@4.7.0)
+        version: 2.2.0(@middy/core@4.7.0)
+      '@flemmingbehrend/x-lambda-eslint-config':
+        specifier: workspace:*
+        version: link:../x-lambda-eslint-config
+      '@flemmingbehrend/x-lambda-typescript-config':
+        specifier: workspace:*
+        version: link:../x-lambda-typescript-config
       '@middy/core':
         specifier: ^4.7.0
         version: 4.7.0
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       aws-lambda:
         specifier: ^1.0.7
         version: 1.0.7
@@ -94,6 +68,32 @@ importers:
         specifier: ^8.1.0
         version: 8.1.0(ts-node@10.9.2)(typescript@5.4.5)
 
+  packages/x-lambda-eslint-config:
+    devDependencies:
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.1.0
+        version: 7.13.0(@typescript-eslint/parser@7.13.0)(eslint@8.57.0)(typescript@5.4.5)
+      '@typescript-eslint/parser':
+        specifier: ^7.1.0
+        version: 7.13.0(eslint@8.57.0)(typescript@5.4.5)
+      '@vercel/style-guide':
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@8.57.0)(prettier@3.3.2)(typescript@5.4.5)
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.0)
+      eslint-config-turbo:
+        specifier: ^2.0.0
+        version: 2.0.3(eslint@8.57.0)
+      eslint-plugin-only-warn:
+        specifier: ^1.1.0
+        version: 1.1.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.4.5
+
+  packages/x-lambda-typescript-config: {}
+
 packages:
 
   /@ampproject/remapping@2.3.0:
@@ -104,19 +104,19 @@ packages:
       '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
-  /@aws-lambda-powertools/commons@2.1.1:
-    resolution: {integrity: sha512-QlvZLVJM4yXlO6mpYlYwWGaLCZTJg8WfsIH8/eT061n4BdBljW/VHMj59sHp/IljQn8HE/VdHKYHqM6vPJjYJw==}
+  /@aws-lambda-powertools/commons@2.2.0:
+    resolution: {integrity: sha512-ZBJ+1ccaP6u9fYrGVWOJYLcseUPZr66/JmL3Z8TcirFTvpb74+Fasn6fdJyh+GgbDDlxsmv62SDum09rKOMBfg==}
     dev: false
 
-  /@aws-lambda-powertools/logger@2.1.1(@middy/core@4.7.0):
-    resolution: {integrity: sha512-OB/ycDef8VD4OpGZcte2dxkdNWQCSxjRu8OJ2nuizh7auqZMI5LX8PYoIBEBRQC138CeJBtKKCwjSi+NOFMY1w==}
+  /@aws-lambda-powertools/logger@2.2.0(@middy/core@4.7.0):
+    resolution: {integrity: sha512-/qD15Q67ztTRJKKKmYProSIEnMRMByw/jH80ZTrOIYf0K0hCujl3cUfN2yDLBkRyoDfiIz22LfRoVYKJfYjc7Q==}
     peerDependencies:
       '@middy/core': '>=3.x'
     peerDependenciesMeta:
       '@middy/core':
         optional: true
     dependencies:
-      '@aws-lambda-powertools/commons': 2.1.1
+      '@aws-lambda-powertools/commons': 2.2.0
       '@middy/core': 4.7.0
       lodash.merge: 4.6.2
     dev: false
@@ -2315,8 +2315,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001632
-      electron-to-chromium: 1.4.800
+      caniuse-lite: 1.0.30001633
+      electron-to-chromium: 1.4.802
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
     dev: true
@@ -2399,8 +2399,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001632:
-    resolution: {integrity: sha512-udx3o7yHJfUxMLkGohMlVHCvFvWmirKh9JAH/d7WOLPetlH+LTL5cocMZ0t7oZx/mdlOWXti97xLZWc8uURRHg==}
+  /caniuse-lite@1.0.30001633:
+    resolution: {integrity: sha512-6sT0yf/z5jqf8tISAgpJDrmwOpLsrpnyCdD/lOZKvKkkJK4Dn0X5i7KF7THEZhOq+30bmhwBlNEaqPUiHiKtZg==}
     dev: true
 
   /chalk@2.4.2:
@@ -2751,8 +2751,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /electron-to-chromium@1.4.800:
-    resolution: {integrity: sha512-G8yyAReBP8m0XaW9BBH5NOJe4ZGYDDsPYkgLCG8xU6HwGKzrT0Jj51uAHkt1D+9ZxHPoGFSSZqqSN7HxAiP+0g==}
+  /electron-to-chromium@1.4.802:
+    resolution: {integrity: sha512-TnTMUATbgNdPXVSHsxvNVSG0uEd6cSZsANjm8c9HbvflZVVn1yTRcmVXYT1Ma95/ssB/Dcd30AHweH2TE+dNpA==}
     dev: true
 
   /emittery@0.13.1:
