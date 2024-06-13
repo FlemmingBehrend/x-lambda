@@ -8,7 +8,7 @@ import {
   isLambdaRequest,
   isCorrelationIdRequest,
 } from "./typeguards";
-import { ExtendedGlobal } from "./ExtendedGlobal";
+import { ExtendedGlobal } from "./extended-global";
 declare const global: ExtendedGlobal;
 
 /**

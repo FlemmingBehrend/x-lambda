@@ -5,7 +5,7 @@ import {
   correlationIdMiddleware,
   PowerToolsLoggerOptions,
 } from "./correlation-id-middleware";
-import { ExtendedGlobal } from "./ExtendedGlobal";
+import { ExtendedGlobal } from "./extended-global";
 declare const global: ExtendedGlobal;
 
 const context = {
