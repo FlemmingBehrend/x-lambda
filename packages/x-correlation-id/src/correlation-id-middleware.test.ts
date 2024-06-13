@@ -1,12 +1,8 @@
 import { APIGatewayEvent, Context } from "aws-lambda";
 import { Logger } from "@aws-lambda-powertools/logger";
 import middy from "@middy/core";
-import {
-  correlationIdMiddleware,
-  PowerToolsLoggerOptions,
-} from "./correlation-id-middleware";
-import { ExtendedGlobal } from "./extended-global";
-declare const global: ExtendedGlobal;
+import { correlationIdMiddleware } from "./correlation-id-middleware";
+import exp from "constants";
 
 const context = {
   getRemainingTimeInMillis: () => 0,
@@ -22,38 +18,21 @@ const context = {
 };
 
 describe("correlation id tests", () => {
-  test("global correlation values should be undefined inside the handler if it could not extracted", async () => {
-    const handler = middy(() => {
-      expect(global.x_correlation_id).toEqual(undefined);
-      expect(global.x_correlation_trigger).toEqual(undefined);
-      expect(global.x_correlation_status).toEqual(undefined);
-    });
-    handler.use(correlationIdMiddleware());
-    const event = {};
-    await handler(event, {} as Context);
-  });
-
-  test("global correlation values should not be available outside the handler", async () => {
-    const handler = middy(() => {});
-    handler.use(correlationIdMiddleware());
-    const event = {};
-    expect(global.x_correlation_id).toBeUndefined();
-    expect(global.x_correlation_trigger).toBeUndefined();
-    expect(global.x_correlation_status).toBeUndefined();
-    await handler(event, context as Context);
-    expect(global.x_correlation_id).toBeUndefined();
-    expect(global.x_correlation_trigger).toBeUndefined();
-    expect(global.x_correlation_status).toBeUndefined();
-  });
-
   describe("AWS API Gateway requests", () => {
     test("AWS API Gateway event creates correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("requestId");
-        expect(global.x_correlation_trigger).toEqual("APIGateway");
-        expect(global.x_correlation_status).toEqual("created");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "requestId",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("APIGateway");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event: APIGatewayEvent = {
         resource: "resource",
         httpMethod: "GET",
@@ -61,31 +40,24 @@ describe("correlation id tests", () => {
         requestContext: {
           requestId: "requestId",
         },
-      } as APIGatewayEvent;
+      } as unknown as APIGatewayEvent;
       await handler(event, context as Context);
-
-      const logger = new Logger();
-      const handlerPowerTools = middy(() => {
-        expect(global.x_correlation_id).toEqual("requestId");
-        expect(global.x_correlation_trigger).toEqual("APIGateway");
-        expect(global.x_correlation_status).toEqual("created");
-        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
-          "requestId",
-        );
-      });
-      const powertoolsLogger: PowerToolsLoggerOptions = {
-        logger,
-      };
-      handlerPowerTools.use(correlationIdMiddleware(powertoolsLogger));
     });
 
     test("AWS API Gateway event transfers correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("x_correlation_id");
-        expect(global.x_correlation_trigger).toEqual("APIGateway");
-        expect(global.x_correlation_status).toEqual("passed");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "x_correlation_id",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("APIGateway");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event: APIGatewayEvent = {
         resource: "resource",
         httpMethod: "GET",
@@ -103,12 +75,19 @@ describe("correlation id tests", () => {
 
   describe("AWS Lambda requests", () => {
     test("AWS Lambda context creates correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("awsRequestId");
-        expect(global.x_correlation_trigger).toEqual("Lambda");
-        expect(global.x_correlation_status).toEqual("created");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "awsRequestId",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("Lambda");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {};
       const lambdaContext: Context = {
         functionName: "functionName",
@@ -118,12 +97,19 @@ describe("correlation id tests", () => {
     });
 
     test("AWS Lambda passed correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("x_correlation_id");
-        expect(global.x_correlation_trigger).toEqual("Lambda");
-        expect(global.x_correlation_status).toEqual("passed");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "x_correlation_id",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("Lambda");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         x_correlation_id: "x_correlation_id",
       };
@@ -133,12 +119,19 @@ describe("correlation id tests", () => {
 
   describe("AWS SNS requests", () => {
     test("SNS Event creates correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("messageId");
-        expect(global.x_correlation_trigger).toEqual("SNS");
-        expect(global.x_correlation_status).toEqual("created");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "messageId",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("SNS");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         Records: [
           {
@@ -154,12 +147,19 @@ describe("correlation id tests", () => {
     });
 
     test("SNS Event transfers correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("x_correlation_id");
-        expect(global.x_correlation_trigger).toEqual("SNS");
-        expect(global.x_correlation_status).toEqual("passed");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "x_correlation_id",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("SNS");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         Records: [
           {
@@ -183,12 +183,19 @@ describe("correlation id tests", () => {
 
   describe("AWS SQS requests", () => {
     test("SQS Event creates correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("messageId");
-        expect(global.x_correlation_trigger).toEqual("SQS");
-        expect(global.x_correlation_status).toEqual("created");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "messageId",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("SQS");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         Records: [
           {
@@ -206,12 +213,19 @@ describe("correlation id tests", () => {
     });
 
     test("SQS Event transfers correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("x_correlation_id");
-        expect(global.x_correlation_trigger).toEqual("SQS");
-        expect(global.x_correlation_status).toEqual("passed");
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "x_correlation_id",
+        );
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("SQS");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         Records: [
           {
@@ -237,14 +251,19 @@ describe("correlation id tests", () => {
 
   describe("AWS EventBridge requests", () => {
     test("EventBridge Event creates correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("eventBridgeEventId");
-        expect(global.x_correlation_trigger).toEqual(
-          "EventBridge: detail-type",
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "eventBridgeEventId",
         );
-        expect(global.x_correlation_status).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("created");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("EventBridge: detail-type");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         id: "eventBridgeEventId",
         "detail-type": "detail-type",
@@ -255,14 +274,19 @@ describe("correlation id tests", () => {
     });
 
     test("EventBridge Event transfers correlation id", async () => {
+      const logger = new Logger();
       const handler = middy(() => {
-        expect(global.x_correlation_id).toEqual("x_correlation_id");
-        expect(global.x_correlation_trigger).toEqual(
-          "EventBridge: detail-type",
+        expect(logger.getPersistentLogAttributes().x_correlation_id).toEqual(
+          "x_correlation_id",
         );
-        expect(global.x_correlation_status).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_status,
+        ).toEqual("passed");
+        expect(
+          logger.getPersistentLogAttributes().x_correlation_trigger,
+        ).toEqual("EventBridge: detail-type");
       });
-      handler.use(correlationIdMiddleware());
+      handler.use(correlationIdMiddleware({ logger }));
       const event = {
         id: "eventBridgeEventId",
         "detail-type": "detail-type",

@@ -1,4 +1,3 @@
-import "./extended-global";
 import { Logger } from "@aws-lambda-powertools/logger";
 import { MiddlewareObj, Request } from "@middy/core";
 import { APIGatewayEvent, SQSRecord } from "aws-lambda";
@@ -64,20 +63,19 @@ type PowerToolsLoggerOptions = {
 const correlationIdMiddleware = (
   powertoolsLoggerOptions?: PowerToolsLoggerOptions,
 ): MiddlewareObj => {
-
   // Add default options
   const defaultOptions = {
     logCorrelationId: true,
     logCorrelationStatus: true,
     logCorrelationTrigger: true,
   };
-  Object.assign(defaultOptions, powertoolsLoggerOptions?.options);
+  const options = Object.assign(
+    defaultOptions,
+    powertoolsLoggerOptions?.options,
+  );
 
   function setCorrelationId(correlationId: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationId &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationId && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_id: correlationId,
       });
@@ -85,10 +83,7 @@ const correlationIdMiddleware = (
   }
 
   function unsetCorrelationId() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationId &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationId && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationIdName,
       ]);
@@ -96,10 +91,7 @@ const correlationIdMiddleware = (
   }
 
   function setCorrelationTrigger(trigger: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationTrigger &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationTrigger && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_trigger: trigger,
       });
@@ -107,10 +99,7 @@ const correlationIdMiddleware = (
   }
 
   function unsetCorrelationTrigger() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationTrigger &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationTrigger && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationTriggerName,
       ]);
@@ -118,10 +107,7 @@ const correlationIdMiddleware = (
   }
 
   function setCorrelationStatus(status: string) {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationStatus &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationStatus && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.addPersistentLogAttributes({
         x_correlation_status: status,
       });
@@ -129,10 +115,7 @@ const correlationIdMiddleware = (
   }
 
   function unsetCorrelationStatus() {
-    if (
-      powertoolsLoggerOptions?.options?.logCorrelationStatus &&
-      powertoolsLoggerOptions?.logger
-    ) {
+    if (options.logCorrelationStatus && powertoolsLoggerOptions?.logger) {
       powertoolsLoggerOptions.logger.removePersistentLogAttributes([
         correlationStatusName,
       ]);
