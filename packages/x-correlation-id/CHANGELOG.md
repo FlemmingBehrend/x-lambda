@@ -1,5 +1,11 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.7.0
+
+### Minor Changes
+
+- 9363ba0: We only support loggers now
+
 ## 0.6.0
 
 ### Minor Changes
