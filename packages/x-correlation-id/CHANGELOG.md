@@ -12,7 +12,7 @@
 
 - 335c69f: fix publish
 
-## 1.0.1
+## 0.0.1
 
 ### Patch Changes
 
