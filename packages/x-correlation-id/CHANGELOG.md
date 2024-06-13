@@ -1,5 +1,11 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.2.0
+
+### Minor Changes
+
+- 47f11d4: fix files to publish
+
 ## 0.1.0
 
 ### Minor Changes
