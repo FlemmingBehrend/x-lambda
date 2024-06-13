@@ -1,5 +1,17 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.4.0
+
+### Minor Changes
+
+- d2e7041: Published dependent packages
+
+### Patch Changes
+
+- Updated dependencies [d2e7041]
+  - @flemmingbehrend/x-lambda-typescript-config@1.0.0
+  - @flemmingbehrend/x-lambda-eslint-config@1.0.0
+
 ## 0.3.0
 
 ### Minor Changes
