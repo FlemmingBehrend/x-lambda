@@ -1,3 +1,4 @@
+import "./extended-global";
 import { Logger } from "@aws-lambda-powertools/logger";
 import { MiddlewareObj, Request } from "@middy/core";
 import { APIGatewayEvent, SQSRecord } from "aws-lambda";
@@ -9,7 +10,6 @@ import {
   isCorrelationIdRequest,
 } from "./typeguards";
 import { ExtendedGlobal } from "./extended-global";
-declare const global: ExtendedGlobal;
 
 /**
  * Specifies the name of the correlation id attribute.
