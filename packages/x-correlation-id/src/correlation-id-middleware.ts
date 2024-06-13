@@ -9,7 +9,6 @@ import {
   isLambdaRequest,
   isCorrelationIdRequest,
 } from "./typeguards";
-import { ExtendedGlobal } from "./extended-global";
 
 /**
  * Specifies the name of the correlation id attribute.
@@ -65,16 +64,14 @@ type PowerToolsLoggerOptions = {
 const correlationIdMiddleware = (
   powertoolsLoggerOptions?: PowerToolsLoggerOptions,
 ): MiddlewareObj => {
-  if (powertoolsLoggerOptions) {
-    if (!powertoolsLoggerOptions.options) {
-      // Add default options
-      powertoolsLoggerOptions.options = {
-        logCorrelationId: true,
-        logCorrelationStatus: false,
-        logCorrelationTrigger: false,
-      };
-    }
-  }
+
+  // Add default options
+  const defaultOptions = {
+    logCorrelationId: true,
+    logCorrelationStatus: true,
+    logCorrelationTrigger: true,
+  };
+  Object.assign(defaultOptions, powertoolsLoggerOptions?.options);
 
   function setCorrelationId(correlationId: string) {
     if (
@@ -85,7 +82,6 @@ const correlationIdMiddleware = (
         x_correlation_id: correlationId,
       });
     }
-    (global as ExtendedGlobal)[correlationIdName] = correlationId;
   }
 
   function unsetCorrelationId() {
@@ -97,7 +93,6 @@ const correlationIdMiddleware = (
         correlationIdName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationIdName];
   }
 
   function setCorrelationTrigger(trigger: string) {
@@ -109,7 +104,6 @@ const correlationIdMiddleware = (
         x_correlation_trigger: trigger,
       });
     }
-    (global as ExtendedGlobal)[correlationTriggerName] = trigger;
   }
 
   function unsetCorrelationTrigger() {
@@ -121,7 +115,6 @@ const correlationIdMiddleware = (
         correlationTriggerName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationTriggerName];
   }
 
   function setCorrelationStatus(status: string) {
@@ -133,7 +126,6 @@ const correlationIdMiddleware = (
         x_correlation_status: status,
       });
     }
-    (global as ExtendedGlobal)[correlationStatusName] = status;
   }
 
   function unsetCorrelationStatus() {
@@ -145,7 +137,6 @@ const correlationIdMiddleware = (
         correlationStatusName,
       ]);
     }
-    delete (global as ExtendedGlobal)[correlationStatusName];
   }
 
   const before = async (request: Request) => {
