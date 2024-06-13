@@ -1,5 +1,11 @@
 # @flemmingbehrend/x-correlation-id
 
+## 0.5.0
+
+### Minor Changes
+
+- b618755: Added package attributes to the global scope
+
 ## 0.4.0
 
 ### Minor Changes
