@@ -6,6 +6,11 @@ declare global {
     }
   }
 }
+
+declare var x_correlation_id: string;
+declare var x_correlation_trigger: string;
+declare var x_correlation_status: string;
+
 /* eslint-enable @typescript-eslint/no-namespace */
 export interface ExtendedGlobal extends NodeJS.Global {
   x_correlation_id?: string;
